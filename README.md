@@ -5,8 +5,9 @@ This is a project for Decentralized ELectricity eXchange (DELX).
 Refer to [excalidraw](https://excalidraw.com/#room=1e40eb59d4910c89d990,kqi-1NwQ7TxqgMy-49i0Nw) for the system design
 
 ## Specifications
-- In frontend, all prices keep two decimals precision in dollars 0.47 $/KWh, and when interacting with smart contract, all prices are represented in cents, 47 cents/KWh. 
-- People can choose to pay in various stablecoins, DELX, USDT, USDC etc. The value of a KWh of electricity should be always stable. Involving Eth for payments will break this stability. Look at [here](https://www.statista.com/statistics/263492/electricity-prices-in-selected-countries/) for the worldwide  electricity household prices.
+- In frontend, all prices keep two decimals precision in dollars, e.g., 0.47 $/KWh, and when interacting with smart contract, all prices are represented in cents, e.g., 47 cents/KWh. 
+- People can choose to pay in various stablecoins, USDT, USDC etc. The value of a KWh of electricity should be always stable. Involving Eth for payments will break this stability. Look at [here](https://www.statista.com/statistics/263492/electricity-prices-in-selected-countries/) for the worldwide  electricity household prices.
+- User types: consumer, prosumer, producer
 
 
 ## Foundry Installation
