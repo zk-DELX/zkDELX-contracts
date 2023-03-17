@@ -1,25 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
+import {IERC20} from  "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 contract Market {
     uint256 private maxPrice;
-    struct Offer {
-        uint256 amount;
-        uint256 price;
-        string location; // ToDo: update to longitude/latitude
-        OfferStatus status;
-    }
-
-    struct Bid {
-        uint256 amount;
-        uint256 price;
-    }
-
-    enum OfferStatus {
-        Listing, // submitted to market by a seller; canceled from Pending
-        Pending, // accepted by a buyer
-        Complete // confirmed by a buyer
-    }
+    IERC20 paymentTokenAddress;
+ 
     modifier isValidOffer(uint256 _price) {
         require(_price <= maxPrice);
         _;
@@ -27,36 +14,10 @@ contract Market {
     // This mapping only stores the current offer of each account
     // historical offers are stored off-chain, e.g., Polybase
     mapping(address => Offer) public offers; 
-    event offerSubmitted(
-        uint256 indexed _amount,
-        uint256 indexed _price,
-        address _offerAccount
-    );
-    event offerAccepted(
-        uint256 indexed _amount,
-        uint256 indexed _price,
-        address _offerAccount,
-        address _buyerAccount
-    );
-    event offerCancelled(
-        uint256 indexed _amount,
-        uint256 indexed _price,
-        address _offerAccount
-    );
-    event offerExperied(
-        uint256 indexed _amount,
-        uint256 indexed _price,
-        address _offerAccount
-    );
-    event offerComplete(
-        uint256 indexed _amount,
-        uint256 indexed _price,
-        uint256 _completeTime,
-        address _offerAccount
-    );
-
-    constructor(uint256 _maxPrice) {
+ 
+    constructor(uint256 _maxPricee, IERC20 _paymentTokenaddress) {
         maxPrice = _maxPrice;
+        paymentTokenAddress = _paymentTokenaddress;
     }
 
     function charge() public {
@@ -67,13 +28,15 @@ contract Market {
         address _offerAccount,
         uint256 _amount,
         uint256 _price,
-        string memory _location
+        string calldata _loc_long,
+        string calldata _loc_lat
     ) external {
         require(msg.sender == _offerAccount, "Cannot submit other's offer");
         offers[_offerAccount] = Offer({
             amount: _amount,
             price: _price,
-            location: _location,
+            loc_long: _loc_long,
+            loc_lat: _loc_lat,
             status: OfferStatus.Listing
         });
         emit offerSubmitted(_amount, _price, _offerAccount);
@@ -120,7 +83,13 @@ contract Market {
         );
         require(msg.sender != _offerAccount, "Cannot complete own offer");
         offers[_offerAccount].status = OfferStatus.Complete;
+        
+        // transfer the stablecoine to offerer
+        IERC20(paymentTokenAddress).transfer(msg.sender, offers[_offerAccount].price);
         delete offers[msg.sender]; // should we delete the offer?
+
+
+       
     }
 
     function getOfferStatus(
