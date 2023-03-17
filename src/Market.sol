@@ -2,8 +2,10 @@
 pragma solidity ^0.8.13;
 
 import {IERC20} from  "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { MarketEvent } from "./MarketEvent.sol";
+import  "./MarketStruct.sol";
 
-contract Market {
+contract Market is MarketEvent{
     uint256 private maxPrice;
     IERC20 paymentTokenAddress;
  
@@ -15,9 +17,9 @@ contract Market {
     // historical offers are stored off-chain, e.g., Polybase
     mapping(address => Offer) public offers; 
  
-    constructor(uint256 _maxPricee, IERC20 _paymentTokenaddress) {
+    constructor(uint256 _maxPrice, address _paymentTokenaddress) {
         maxPrice = _maxPrice;
-        paymentTokenAddress = _paymentTokenaddress;
+        paymentTokenAddress = IERC20(_paymentTokenaddress);
     }
 
     function charge() public {
