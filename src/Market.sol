@@ -2,11 +2,12 @@
 pragma solidity ^0.8.13;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import {MarketEvent} from "./MarketEvent.sol";
 import "./MarketStruct.sol";
 
-contract Market is MarketEvent {
+contract Market is MarketEvent, Ownable {
     uint256 private maxPrice;
 
     modifier isValidOffer(uint256 _price) {
@@ -49,14 +50,22 @@ contract Market is MarketEvent {
         });
         emit offerSubmitted(_amount, _price, _offerAccount);
     }
-
+    
+    /**
+     * Accpet the offer from user and deposite the amount to this contract
+     */
     function acceptOffer(address _offerAccount) external {
+
         require(
             offers[_offerAccount].status == OfferStatus.Listing,
             "Offer is not listed"
         );
         require(msg.sender != _offerAccount, "Cannot accept own offer");
         offers[_offerAccount].status = OfferStatus.Pending;
+
+        // deposite amount to this contract 
+        IERC20(offers[_offerAccount].paymentToken).transferFrom(msg.sender, address(this), offers[_offerAccount].price);
+        
         emit offerAccepted(
             offers[_offerAccount].amount,
             offers[_offerAccount].price,
@@ -66,7 +75,7 @@ contract Market is MarketEvent {
     }
 
     /*
-      @dev: buyer cancels an offer
+      @dev: buyer cancels an offer and return the deposit 
     */
     function cancelOffer(address _offerAccount) external {
         require(
@@ -75,6 +84,9 @@ contract Market is MarketEvent {
         );
         require(msg.sender != _offerAccount, "Cannot cancel own offer");
         offers[_offerAccount].status = OfferStatus.Listing;
+
+        // return the deposite
+        IERC20(offers[_offerAccount].paymentToken).transfer(msg.sender, offers[_offerAccount].price);
     }
 
     /*
