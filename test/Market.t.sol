@@ -7,8 +7,8 @@ import "../src/Market.sol";
 contract MarketTest is Test {
     Market market;
     function setUp() public {
-      address paymentTokenAddress = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
-      market = new Market(10000, paymentTokenAddress);
+
+      market = new Market(10000);
     }
 
     // function testMaxPrice() public {
