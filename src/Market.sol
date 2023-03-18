@@ -128,4 +128,30 @@ contract Market is MarketEvent {
         require(isPaymentWhitelisted(_paymentToken), "PAYMENT NOT EXIST");
         paymentTokenWhitelist.remove(_paymentToken);
     }
+
+    /**
+     * @notice ERC20 token balance validation
+     */
+     function _validateERC20BalAndAllowance(
+        address _addrToCheck,
+        address _currency,
+        uint256 _currencyAmountToCheckAgainst
+    ) internal view {
+        // check payment token in whitelist
+        require(
+            isPaymentWhitelisted(address(_currency)),
+            "PAYMENT TOKEN NOT ALLOWED"
+        );
+
+        require(
+            IERC20(_currency).balanceOf(_addrToCheck) >=
+                _currencyAmountToCheckAgainst &&
+                IERC20(_currency).allowance(
+                    _addrToCheck,
+                    address(this)
+                ) >=
+                _currencyAmountToCheckAgainst,
+            "NOT SUFFICIENT BAL"
+        );
+    }
 }
