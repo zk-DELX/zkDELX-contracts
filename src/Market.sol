@@ -116,7 +116,8 @@ contract Market is MarketEvent, Ownable {
         );
         delete offers[msg.sender]; // should we delete the offer?
     }
-
+    
+    
     function getOfferStatus(
         address _offerAccount
     ) public view returns (OfferStatus status) {
