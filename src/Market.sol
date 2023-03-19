@@ -114,7 +114,7 @@ contract Market is MarketEvent, Ownable {
             msg.sender,
             offers[_offerAccount].price
         );
-        delete offers[msg.sender]; // should we delete the offer?
+        delete offers[msg.sender]; // active offer deleted
     }
     
     

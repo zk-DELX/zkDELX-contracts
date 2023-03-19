@@ -50,6 +50,21 @@ forge test -vvvvv
 
 Please create a `.env` file before deployment. An example can be found in `.env.example`.
 
+#### Local deployment
+
+Run `anvil` by open another terminal. This will start a local network and spin up 10 accounts and private keys and log them out to the console. Once the network is running, we can use forge to deploy the contract to the network. 
+
+Next, set the PRIVATE_KEY variable by using one of the private keys given to you by Anvil: 
+
+`export PRIVATE_KEY=<your-private-key>`
+
+To deploy localy, run the code below: (In the `.env` file, input only `ETHERSCAN_KEY="43YT5BP2MWN1HMBY5I5IE5BQ7I1FBB5Z2D"` should be good to deploy locally)
+
+```
+forge script script/Market.s.sol:ContractScript --fork-url http://localhost:8545 \
+--private-key $PRIVATE_KEY --broadcast
+```
+
 #### Dryrun
 
 ```
@@ -61,3 +76,6 @@ forge script script/Deploy.s.sol -f [network]
 ```
 forge script script/Deploy.s.sol -f [network] --verify --broadcast
 ```
+
+### Example 
+https://github.com/dabit3/foundry-workshop
