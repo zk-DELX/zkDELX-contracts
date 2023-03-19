@@ -43,7 +43,7 @@ forge build
 ### Testing
 
 ```
-forge test
+forge test -vvvvv
 ```
 
 ### Contract deployment
