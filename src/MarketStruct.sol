@@ -5,8 +5,7 @@ struct Offer {
     uint256 amount;
     uint256 price;
     address paymentToken;
-    string loc_long; // ToDo: update to longitude/latitude
-    string loc_lat;
+    string location; 
     OfferStatus status;
 }
 

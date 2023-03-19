@@ -35,8 +35,7 @@ contract Market is MarketEvent, Ownable {
         uint256 _amount,
         uint256 _price,
         address _paymentToken,
-        string calldata _loc_long,
-        string calldata _loc_lat
+        string calldata _location
     ) external {
         require(msg.sender == _offerAccount, "Cannot submit other's offer");
         require(isPaymentWhitelisted(_paymentToken), "PAYMENT METHOD NOT WHITELIST");
@@ -44,8 +43,7 @@ contract Market is MarketEvent, Ownable {
             amount: _amount,
             price: _price,
             paymentToken: _paymentToken,
-            loc_long: _loc_long,
-            loc_lat: _loc_lat,
+            location: _location,
             status: OfferStatus.Listing
         });
         emit offerSubmitted(_amount, _price, _offerAccount);

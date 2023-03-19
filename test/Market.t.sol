@@ -58,15 +58,15 @@ contract MarketTest is MarketEvent, Test {
       uint256 amount = 1000;
       uint256 price = 10**6;
       address paymentToken = address(token);
-      string memory long = "10.00";
-      string memory lat = "10.00";
+      string memory location = "testLocation";
+     
       
       /// @notice the vm.expectEmit must locate before the contract call
       vm.expectEmit(true, true, false, true);
       emit offerSubmitted(amount, price, offerAccount);
       
       vm.prank(supplier);
-      market.submitOffer(offerAccount, amount, price, paymentToken, long, lat);
+      market.submitOffer(offerAccount, amount, price, paymentToken, location);
 
     
 
