@@ -77,5 +77,18 @@ forge script script/Deploy.s.sol -f [network]
 forge script script/Deploy.s.sol -f [network] --verify --broadcast
 ```
 
+
+
 ### Example 
 https://github.com/dabit3/foundry-workshop
+
+### Polygon zkEVM
+Contract address: `0x258FF931ce6A7DC9391a649E8a7A84fC17717c76`
+
+Testnet setup and bridge ETH from Goerli https://wiki.polygon.technology/docs/zkEVM/develop
+
+Then using Remix to deploy it.
+
+Etherscan verifcation process: https://explorer.public.zkevm-test.net/address/0x258FF931ce6A7DC9391a649E8a7A84fC17717c76/contracts#address-tabs
+
+https://explorer.public.zkevm-test.net/address/0x258FF931ce6A7DC9391a649E8a7A84fC17717c76/contracts#address-tabs 
