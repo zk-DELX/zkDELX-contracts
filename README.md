@@ -89,6 +89,6 @@ Testnet setup and bridge ETH from Goerli https://wiki.polygon.technology/docs/zk
 
 Then using Remix to deploy it.
 
-Etherscan verifcation process: https://explorer.public.zkevm-test.net/address/0x258FF931ce6A7DC9391a649E8a7A84fC17717c76/contracts#address-tabs
+Etherscan verifcation process: https://github.com/oceans404/zkevm-hardhat-demo#verify-your-polygon-zkevm-testnet-contract
 
 https://explorer.public.zkevm-test.net/address/0x258FF931ce6A7DC9391a649E8a7A84fC17717c76/contracts#address-tabs 
