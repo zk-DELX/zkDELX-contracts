@@ -92,3 +92,20 @@ Then using Remix to deploy it.
 Etherscan verifcation process: https://github.com/oceans404/zkevm-hardhat-demo#verify-your-polygon-zkevm-testnet-contract
 
 https://explorer.public.zkevm-test.net/address/0x258FF931ce6A7DC9391a649E8a7A84fC17717c76/contracts#address-tabs 
+
+### Scroll Alpha Testnet
+https://guide.scroll.io/developers/developer-quickstart 
+
+Contract deployment to run:
+
+```
+forge create --rpc-url https://alpha-rpc.scroll.io/l2 \
+  --constructor-args 1000000000 \
+  --private-key <PK> \
+  --legacy \
+  src/Market.sol:Market
+```
+
+Deployer: 0xb72D7383D233697B74c672BAa0B0BfeCAAc10B99
+Deployed to: 0x258FF931ce6A7DC9391a649E8a7A84fC17717c76
+Transaction hash: 0x8097d4708ce748ad12fd8c6a24dfd145079a3fe48cf37b4fb292bd1a3ce3b93b
