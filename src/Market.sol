@@ -61,8 +61,12 @@ contract Market is MarketEvent, Ownable {
         require(msg.sender != _offerAccount, "Cannot accept own offer");
         offers[_offerAccount].status = OfferStatus.Pending;
 
+        
+        // final price
+        uint256 finalPrice = offers[_offerAccount].price * offers[_offerAccount].amount;
+
         // deposite amount to this contract 
-        IERC20(offers[_offerAccount].paymentToken).transferFrom(msg.sender, address(this), offers[_offerAccount].price);
+        IERC20(offers[_offerAccount].paymentToken).transferFrom(msg.sender, address(this), finalPrice);
         
         emit offerAccepted(
             offers[_offerAccount].amount,
@@ -107,10 +111,13 @@ contract Market is MarketEvent, Ownable {
         require(msg.sender != _offerAccount, "Cannot complete own offer");
         offers[_offerAccount].status = OfferStatus.Complete;
 
+        // final price
+        uint256 finalPrice = offers[_offerAccount].price * offers[_offerAccount].amount;
+
         // transfer the stablecoine to offerer
         IERC20(offers[_offerAccount].paymentToken).transfer(
             msg.sender,
-            offers[_offerAccount].price
+            finalPrice
         );
         delete offers[msg.sender]; // active offer deleted
     }

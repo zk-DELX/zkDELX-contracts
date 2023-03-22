@@ -9,7 +9,7 @@ contract ContractScript is Script {
 
     function run() public {
         vm.broadcast();
-        uint256 maxVal = 1000*10**6;
+        uint256 maxVal = 1000 * 10 ** 6;
         new Market(maxVal);
     }
 }

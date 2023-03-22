@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 struct Offer {
     uint256 amount;
-    uint256 price;
+    uint256 price; // unit price (kw/hr)
     address paymentToken;
     string location; 
     OfferStatus status;
