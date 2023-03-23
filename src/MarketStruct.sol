@@ -2,16 +2,14 @@
 pragma solidity ^0.8.13;
 
 struct Offer {
-    uint256 amount;
-    uint256 price; // unit price (kw/hr)
+    uint256 amount; // initially max amount
+    uint256 currBuyAmount; // current buy amount kwh
+    uint256 price; // unit price (cents/kwr)
     address paymentToken;
-    string location; 
+    string location;
     OfferStatus status;
-}
-
-struct Bid {
-    uint256 amount;
-    uint256 price;
+    address sellerAccount;
+    address buyerAccount;
 }
 
 enum OfferStatus {

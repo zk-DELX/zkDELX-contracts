@@ -5,7 +5,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import {MarketEvent} from "./MarketEvent.sol";
-import "./MarketStruct.sol";
+import {OfferStatus, Offer} from "./MarketStruct.sol";
 
 contract Market is MarketEvent, Ownable {
     uint256 private maxPrice;
@@ -16,62 +16,82 @@ contract Market is MarketEvent, Ownable {
     }
     // This mapping only stores the current offer of each account
     // historical offers are stored off-chain, e.g., Polybase
-    mapping(address => Offer) public offers;
+    mapping(string => Offer) public offers;
+    // mapping(address => Listing) public listings; // store seller's offers
 
     // paymentToken address whitelist
     using EnumerableSet for EnumerableSet.AddressSet;
     EnumerableSet.AddressSet paymentTokenWhitelist;
 
     constructor(uint256 _maxPrice) {
-        maxPrice = _maxPrice;
+        maxPrice = _maxPrice; // 1000 USD
     }
 
-    function charge() public {
-        // Token consumer => smartContract => provider
-    }
+    /**
+     * Seller updates an Linsting offer; stores to Listing.
+     */
+    // function updateOffer() public {
+    //     // Token consumer => smartContract => provider
+    // }
 
+    /**
+     * Seller submits an offer; stores to Listing.
+     */
     function submitOffer(
-        address _offerAccount,
+        string calldata _offerID,
         uint256 _amount,
         uint256 _price,
         address _paymentToken,
         string calldata _location
     ) external {
-        require(msg.sender == _offerAccount, "Cannot submit other's offer");
-        require(isPaymentWhitelisted(_paymentToken), "PAYMENT METHOD NOT WHITELIST");
-        offers[_offerAccount] = Offer({
+        require(
+            isPaymentWhitelisted(_paymentToken),
+            "PAYMENT METHOD NOT WHITELIST"
+        );
+        offers[_offerID] = Offer({
             amount: _amount,
+            currBuyAmount: 0,
             price: _price,
             paymentToken: _paymentToken,
             location: _location,
-            status: OfferStatus.Listing
+            status: OfferStatus.Pending,
+            sellerAccount: msg.sender,
+            buyerAccount: address(0)
         });
-        emit offerSubmitted(_amount, _price, _offerAccount);
+        emit offerSubmitted(_amount, _price, _offerID);
     }
-    
-    /**
-     * Accpet the offer from user and deposite the amount to this contract
-     */
-    function acceptOffer(address _offerAccount) external {
 
+    /**
+     * Buyer accpets the offer from user and deposite the amount to this contract
+     */
+    function buyOffer(string calldata _offerID, uint256 _amount) external {
         require(
-            offers[_offerAccount].status == OfferStatus.Listing,
+            offers[_offerID].status == OfferStatus.Listing,
             "Offer is not listed"
         );
-        require(msg.sender != _offerAccount, "Cannot accept own offer");
-        offers[_offerAccount].status = OfferStatus.Pending;
-
-        
+        require(offers[_offerID].amount > _amount, "Access max amount");
+        require(
+            offers[_offerID].sellerAccount != msg.sender,
+            "Cannot accept own offer"
+        );
         // final price
-        uint256 finalPrice = offers[_offerAccount].price * offers[_offerAccount].amount;
+        uint256 finalPrice = offers[_offerID].price * _amount;
 
-        // deposite amount to this contract 
-        IERC20(offers[_offerAccount].paymentToken).transferFrom(msg.sender, address(this), finalPrice);
-        
+        // deposite amount to this contract
+        IERC20(offers[_offerID].paymentToken).transferFrom(
+            msg.sender,
+            address(this),
+            finalPrice
+        );
+
+        offers[_offerID].status = OfferStatus.Pending;
+        offers[_offerID].currBuyAmount = _amount;
+        offers[_offerID].amount -= _amount;
+
         emit offerAccepted(
-            offers[_offerAccount].amount,
-            offers[_offerAccount].price,
-            _offerAccount,
+            offers[_offerID].amount,
+            offers[_offerID].price,
+            _offerID,
             msg.sender
         );
     }
@@ -79,54 +99,71 @@ contract Market is MarketEvent, Ownable {
     /*
       @dev: buyer cancels an offer and return the deposit 
     */
-    function cancelOffer(address _offerAccount) external {
+    function cancelOffer(string calldata _offerID) external {
         require(
-            offers[_offerAccount].status == OfferStatus.Pending,
+            offers[_offerID].status == OfferStatus.Pending,
             "Offer is not pending"
         );
-        require(msg.sender != _offerAccount, "Cannot cancel own offer");
-        offers[_offerAccount].status = OfferStatus.Listing;
-
-        // return the deposite
-        IERC20(offers[_offerAccount].paymentToken).transfer(msg.sender, offers[_offerAccount].price);
+        require(
+            msg.sender != offers[_offerID].buyerAccount,
+            "Cannot cancel other's offer"
+        );
+        // refund price
+        uint256 refundPrice = offers[_offerID].price *
+            offers[_offerID].currBuyAmount;
+        // refund the deposite
+        IERC20(offers[_offerID].paymentToken).transfer(msg.sender, refundPrice);
+        offers[_offerID].status = OfferStatus.Listing;
+        offers[_offerID].amount += offers[_offerID].currBuyAmount;
+        offers[_offerID].currBuyAmount = 0;
     }
 
     /*
       @dev: seller deletes an offer
     */
-    function deleteOffer(address _offerAccount) external {
-        require(msg.sender == _offerAccount, "Cannot delete other's offer");
-        delete offers[msg.sender];
+    function deleteOffer(string calldata _offerID) external {
+        require(
+            msg.sender == offers[_offerID].sellerAccount,
+            "Cannot del other's offer"
+        );
+        require(
+            offers[_offerID].status == OfferStatus.Listing,
+            "Cannot del nonListing offer"
+        );
+        delete offers[_offerID];
     }
 
     /*
       @dev: buyer confirms an offer is complete and transfer to seller
       TODO: AA handles this process
     */
-    function completeOffer(address _offerAccount) external {
+    function completeOffer(string calldata _offerID) external {
         require(
-            offers[_offerAccount].status == OfferStatus.Pending,
+            offers[_offerID].status == OfferStatus.Pending,
             "Offer is not pending"
         );
-        require(msg.sender != _offerAccount, "Cannot complete own offer");
-        offers[_offerAccount].status = OfferStatus.Complete;
+        require(
+            msg.sender != offers[_offerID].buyerAccount,
+            "Cannot complete own offer"
+        );
+        offers[_offerID].status = OfferStatus.Complete;
 
         // final price
-        uint256 finalPrice = offers[_offerAccount].price * offers[_offerAccount].amount;
+        uint256 finalPrice = offers[_offerID].price *
+            offers[_offerID].currBuyAmount;
 
         // transfer the stablecoine to offerer
-        IERC20(offers[_offerAccount].paymentToken).transfer(
-            msg.sender,
-            finalPrice
+        IERC20(offers[_offerID].paymentToken).transfer(msg.sender, finalPrice);
+        // delete offers[_offerID]; // active offer deleted
+        offers[_offerID].status = OfferStatus.Listing;
+        offers[_offerID].buyerAccount = address(0);
+        offers[_offerID].currBuyAmount = 0;
+        emit offerComplete(
+            offers[_offerID].currBuyAmount,
+            offers[_offerID].price,
+            block.timestamp,
+            _offerID
         );
-        delete offers[msg.sender]; // active offer deleted
-    }
-    
-    
-    function getOfferStatus(
-        address _offerAccount
-    ) public view returns (OfferStatus status) {
-        status = offers[_offerAccount].status;
     }
 
     // paymentTokenWhitelist operations
@@ -150,7 +187,7 @@ contract Market is MarketEvent, Ownable {
     /**
      * @notice ERC20 token balance validation
      */
-     function _validateERC20BalAndAllowance(
+    function _validateERC20BalAndAllowance(
         address _addrToCheck,
         address _currency,
         uint256 _currencyAmountToCheckAgainst
@@ -164,10 +201,7 @@ contract Market is MarketEvent, Ownable {
         require(
             IERC20(_currency).balanceOf(_addrToCheck) >=
                 _currencyAmountToCheckAgainst &&
-                IERC20(_currency).allowance(
-                    _addrToCheck,
-                    address(this)
-                ) >=
+                IERC20(_currency).allowance(_addrToCheck, address(this)) >=
                 _currencyAmountToCheckAgainst,
             "NOT SUFFICIENT BAL"
         );
