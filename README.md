@@ -106,16 +106,21 @@ forge create --rpc-url https://alpha-rpc.scroll.io/l2 \
   src/Market.sol:Market
 ```
 
-Deployer: 0xb72D7383D233697B74c672BAa0B0BfeCAAc10B99
-Deployed to: 0x6ed5AA348b93022D0f117823f2F7525EecA526fd
-Transaction hash: 0x0ab4e000eb522c23328c428dcc5fd4cd164d47a4e790c6dc02ce9daef0deb479
-Deployer: 0xb72D7383D233697B74c672BAa0B0BfeCAAc10B99
-Deployed to: 0x258FF931ce6A7DC9391a649E8a7A84fC17717c76
-Transaction hash: 0x8097d4708ce748ad12fd8c6a24dfd145079a3fe48cf37b4fb292bd1a3ce3b93b
+Test token deploy
+```
+forge create --rpc-url https://alpha-rpc.scroll.io/l2 \
+  --constructor-args <Minter address> \
+  --private-key <PK> \
+  --legacy \
+  ----build-info \
+  src/test/TestToken.sol:TestToken
+https://blockscout.scroll.io/address/0x7A3CFcf7FD5C67abb2970EEB35D3a4a2BacCACD2/read-contract#address-tabs
+```
+
 
 ### Taiko Hackathon Testnet
 ```
-orge create --rpc-url https://l2rpc.a2.taiko.xyz/ \
+forge create --rpc-url https://l2rpc.a2.taiko.xyz/ \
   --constructor-args 0xb72D7383D233697B74c672BAa0B0BfeCAAc10B99 \
   --private-key <PK> \
   --legacy \
@@ -127,13 +132,11 @@ Transaction hash: 0x707be16258be9ea9af34e3ba011f81980c7d6afa2bf9c28406099a71d388
 ```
 
 ```
-forge create --rpc-url https://l2rpc.hackathon.taiko.xyz \
-  --constructor-args <PK> \
+forge create --rpc-url https://l2rpc.a2.taiko.xyz \
+  --constructor-args 1000000000000000000000 \
   --private-key <PK> \
   --legacy \
   src/Market.sol:Market
 
-Deployer: 0xb72D7383D233697B74c672BAa0B0BfeCAAc10B99
-Deployed to: 0x6ed5AA348b93022D0f117823f2F7525EecA526fd
-Transaction hash: 0xdbb97be9580e2ed72ad53b4ba85b59ef41172d1f44908032954c5933e8da2013
+Deployed to:  0x4e2b1bA85b1696A8C826Be0524eFb9345701d776 
 ```
