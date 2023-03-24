@@ -17,14 +17,13 @@ contract Market is MarketEvent, Ownable {
     // This mapping only stores the current offer of each account
     // historical offers are stored off-chain, e.g., Polybase
     mapping(string => Offer) public offers;
-    // mapping(address => Listing) public listings; // store seller's offers
 
     // paymentToken address whitelist
     using EnumerableSet for EnumerableSet.AddressSet;
     EnumerableSet.AddressSet paymentTokenWhitelist;
 
     constructor(uint256 _maxPrice) {
-        maxPrice = _maxPrice; // 1000 USD
+        maxPrice = _maxPrice; // max unit price in USD cents, default 1000 cents
     }
 
     /**
@@ -54,7 +53,7 @@ contract Market is MarketEvent, Ownable {
             price: _price,
             paymentToken: _paymentToken,
             location: _location,
-            status: OfferStatus.Pending,
+            status: OfferStatus.Listing,
             sellerAccount: msg.sender,
             buyerAccount: address(0)
         });
@@ -174,12 +173,12 @@ contract Market is MarketEvent, Ownable {
         return paymentTokenWhitelist.contains(_paymentToken);
     }
 
-    function addPaymentToken(address _paymentToken) external {
+    function addPaymentToken(address _paymentToken) external onlyOwner {
         require(!isPaymentWhitelisted(_paymentToken), "PAYMENT EXIST");
         paymentTokenWhitelist.add(_paymentToken);
     }
 
-    function removePaymentToken(address _paymentToken) external {
+    function removePaymentToken(address _paymentToken) external onlyOwner {
         require(isPaymentWhitelisted(_paymentToken), "PAYMENT NOT EXIST");
         paymentTokenWhitelist.remove(_paymentToken);
     }
