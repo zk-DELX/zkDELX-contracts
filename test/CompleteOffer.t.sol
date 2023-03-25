@@ -2,15 +2,15 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-import "../src/Market.sol";
+import "../src/test/MockMarket.sol";
 import "./utils/MockERC20.sol";
 import {OfferStatus, Offer} from "../src/MarketStruct.sol";
 
-contract BuyOffer is MarketEvent, Test {
+contract CompleteOffer is MarketEvent, Test {
 
 
 
-    Market market;
+    MockMarket market;
     MockERC20 token;
     uint256 userPrivateKey;
     address user;
@@ -19,6 +19,7 @@ contract BuyOffer is MarketEvent, Test {
     string _offerId;
     uint256 _price;
     uint256 _amount;
+    uint256 _currBuyAmount;
 
 
     function setUp() public {
@@ -34,7 +35,9 @@ contract BuyOffer is MarketEvent, Test {
         token.mint(user, 1e18);
 
         uint256 maxValue = 10000 * 10 ** 18;
-        market = new Market(maxValue);
+        market = new MockMarket(maxValue);
+
+        token.mint(address(market), 1e18);
 
         // add token address into the whitelist
         market.addPaymentToken(address(token));
@@ -44,15 +47,28 @@ contract BuyOffer is MarketEvent, Test {
 
 
         
-        // submit a offer
+        // inert a offer
         vm.prank(supplier);
         _offerId = "testID";
         _amount = 1000;
+        _currBuyAmount = 50;
         _price = 5 * 10 ** 5;
         address _paymentToken = address(token);
         string memory _location = "testLocation";
+        OfferStatus _status = OfferStatus.Pending;
+
+        Offer memory pendingOffer = Offer(
+            _amount,
+            _currBuyAmount,
+            _price,
+            _paymentToken,
+            _location,
+            _status,
+            address(supplier),
+            address(user)
+        );
         
-        market.submitOffer(_offerId, _amount, _price, _paymentToken, _location);
+        market.insertOffer(_offerId, pendingOffer);
 
     }
 
@@ -60,42 +76,29 @@ contract BuyOffer is MarketEvent, Test {
      * buy offer
      */
 
-    function test_buyOffer(uint256 buyAmount) public {
+    function test_CompleteOffer() public {
 
-        uint256 previousBalance = token.balanceOf(user);
+        uint256 previousBalance = token.balanceOf(supplier);
 
-         vm.assume(buyAmount < _amount);
-        // uint256 buyAmount = _amount - 20;
         /// @notice the vm.expectEmit must locate before the contract call
         vm.expectEmit(true, true, false, true);
-        emit offerAccepted(buyAmount, _price, _offerId, address(user));
+        emit offerComplete(_currBuyAmount, _price, block.timestamp, _offerId);
 
         vm.prank(user);
-        market.buyOffer(_offerId, buyAmount);
+        market.completeOffer(_offerId);
 
-        uint256 finalPrice = buyAmount * _price;
+        uint256 finalPrice = _currBuyAmount * _price;
         
-        uint256 afterBalance = token.balanceOf(user);
-        assertEq(afterBalance + finalPrice, previousBalance);
+        uint256 afterBalance = token.balanceOf(supplier);
+        assertEq(afterBalance - finalPrice, previousBalance);
     }
-    
-    
-    // function testFailed_CxeedMaxAmount() public {
+
+    // /// helper function
+    // function insertPendingOffer(string memory offerId, Offer memory offer) internal {
+        
+    //     MockMarket.insertOffer(offerId, offer);
 
     // }
-    /**
-     * accepOffer
-     */
-    function test_acceptOffer() public {}
+    
 
-    /**
-     * cancelOffer
-     */
-
-    function test_canceloffer() public {}
-
-    /**
-     * completeOffer
-     */
-    function test_completeOffer() public {}
 }
