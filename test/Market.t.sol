@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 import "forge-std/Test.sol";
 import "../src/Market.sol";
 import "./utils/MockERC20.sol";
-
+import {OfferStatus, Offer} from "../src/MarketStruct.sol";
 
 contract MarketTest is MarketEvent, Test {
     Market market;
@@ -27,14 +27,14 @@ contract MarketTest is MarketEvent, Test {
       
 
 
-      // mockERC20 with 6 decimals as stablecoin payment
+      
       token = new MockERC20();
       token.mint(user, 1e18);
 
   
 
       
-      uint256 maxValue = 10000*10**6;
+      uint256 maxValue = 10000*10**18;
       market = new Market(maxValue);
       
 
@@ -54,22 +54,31 @@ contract MarketTest is MarketEvent, Test {
     function test_submiteOffer() public {
       
 
-      address offerAccount = address(supplier);
-      uint256 amount = 1000;
-      uint256 price = 10**6;
-      address paymentToken = address(token);
-      string memory location = "testLocation";
-     
+      string memory _offerId = "testID";
+      uint256 _amount = 1000;
+      uint256 _price = 5*10**5;
+      address _paymentToken = address(token);
+      string memory _location = "testLocation";
+      
+      
+      // // create a offer
+      // Offer newOffer =  Offer({
+      //       amount: _amount,
+      //       currBuyAmount: 0,
+      //       price: _price,
+      //       paymentToken: _paymentToken,
+      //       location: _location,
+      //       status: OfferStatus.Listing,
+      //       sellerAccount: msg.sender,
+      //       buyerAccount: address(0)
+      //   });
       
       /// @notice the vm.expectEmit must locate before the contract call
       vm.expectEmit(true, true, false, true);
-      emit offerSubmitted(amount, price, offerAccount);
+      emit offerSubmitted(_amount, _price, _offerId);
       
       vm.prank(supplier);
-      market.submitOffer(offerAccount, amount, price, paymentToken, location);
-
-    
-
+      market.submitOffer(_offerId, _amount, _price, _paymentToken, _location);
     }
 
     /**
