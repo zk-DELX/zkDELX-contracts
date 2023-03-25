@@ -92,13 +92,6 @@ contract CompleteOffer is MarketEvent, Test {
         uint256 afterBalance = token.balanceOf(supplier);
         assertEq(afterBalance - finalPrice, previousBalance);
     }
-
-    // /// helper function
-    // function insertPendingOffer(string memory offerId, Offer memory offer) internal {
-        
-    //     MockMarket.insertOffer(offerId, offer);
-
-    // }
-    
+   
 
 }

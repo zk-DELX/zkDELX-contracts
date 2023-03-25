@@ -68,20 +68,4 @@ contract SubmitOffer is MarketEvent, Test {
         vm.prank(supplier);
         market.submitOffer(_offerId, _amount, _price, _paymentToken, _location);
     }
-
-    /**
-     * accepOffer
-     */
-    function test_acceptOffer() public {}
-
-    /**
-     * cancelOffer
-     */
-
-    function test_canceloffer() public {}
-
-    /**
-     * completeOffer
-     */
-    function test_completeOffer() public {}
 }

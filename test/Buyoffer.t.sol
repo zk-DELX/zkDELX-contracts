@@ -80,22 +80,4 @@ contract BuyOffer is MarketEvent, Test {
     }
     
     
-    // function testFailed_CxeedMaxAmount() public {
-
-    // }
-    /**
-     * accepOffer
-     */
-    function test_acceptOffer() public {}
-
-    /**
-     * cancelOffer
-     */
-
-    function test_canceloffer() public {}
-
-    /**
-     * completeOffer
-     */
-    function test_completeOffer() public {}
 }
