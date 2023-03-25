@@ -17,13 +17,14 @@ contract Market is MarketEvent, Ownable {
     // This mapping only stores the current offer of each account
     // historical offers are stored off-chain, e.g., Polybase
     mapping(string => Offer) public offers;
+    // mapping(address => Listing) public listings; // store seller's offers
 
     // paymentToken address whitelist
     using EnumerableSet for EnumerableSet.AddressSet;
     EnumerableSet.AddressSet paymentTokenWhitelist;
 
     constructor(uint256 _maxPrice) {
-        maxPrice = _maxPrice; // max unit price in USD cents, default 1000 cents
+        maxPrice = _maxPrice; // 1000 USD cents
     }
 
     /**
@@ -60,6 +61,17 @@ contract Market is MarketEvent, Ownable {
         emit offerSubmitted(_amount, _price, _offerID);
     }
 
+    function approveBeforeBuy(
+        string calldata _offerID,
+        uint256 _amount
+    ) external {
+        uint256 finalPrice = offers[_offerID].price * _amount;
+        IERC20(offers[_offerID].paymentToken).approve(
+            address(this),
+            finalPrice
+        );
+    }
+
     /**
      * Buyer accpets the offer from user and deposite the amount to this contract
      */
@@ -68,7 +80,7 @@ contract Market is MarketEvent, Ownable {
             offers[_offerID].status == OfferStatus.Listing,
             "Offer is not listed"
         );
-        require(offers[_offerID].amount > _amount, "Access max amount");
+        // require(offers[_offerID].amount > _amount, "Exceed max amount");
         require(
             offers[_offerID].sellerAccount != msg.sender,
             "Cannot accept own offer"
@@ -111,6 +123,7 @@ contract Market is MarketEvent, Ownable {
         uint256 refundPrice = offers[_offerID].price *
             offers[_offerID].currBuyAmount;
         // refund the deposite
+        IERC20(offers[_offerID].paymentToken).approve(msg.sender, refundPrice);
         IERC20(offers[_offerID].paymentToken).transfer(msg.sender, refundPrice);
         offers[_offerID].status = OfferStatus.Listing;
         offers[_offerID].amount += offers[_offerID].currBuyAmount;
@@ -152,6 +165,7 @@ contract Market is MarketEvent, Ownable {
             offers[_offerID].currBuyAmount;
 
         // transfer the stablecoine to offerer
+        IERC20(offers[_offerID].paymentToken).approve(msg.sender, finalPrice);
         IERC20(offers[_offerID].paymentToken).transfer(msg.sender, finalPrice);
         // delete offers[_offerID]; // active offer deleted
         offers[_offerID].status = OfferStatus.Listing;
