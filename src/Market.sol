@@ -100,7 +100,7 @@ contract Market is MarketEvent, Ownable {
         offers[_offerID].amount -= _amount;
 
         emit offerAccepted(
-            offers[_offerID].amount,
+            _amount,
             offers[_offerID].price,
             _offerID,
             msg.sender
