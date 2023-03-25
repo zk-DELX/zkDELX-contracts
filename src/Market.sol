@@ -96,7 +96,8 @@ contract Market is MarketEvent, Ownable {
             address(this),
             finalPrice
         );
-
+        
+        offers[_offerID].buyerAccount = msg.sender;
         offers[_offerID].status = OfferStatus.Pending;
         offers[_offerID].currBuyAmount = _amount;
         offers[_offerID].amount -= _amount;
