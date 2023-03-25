@@ -11,9 +11,9 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 // This is the main building block for smart contracts.
 contract TestToken is ERC20 {
     // The fixed amount of tokens stored in an unsigned integer type variable.
-    uint256 public _totalSupply = 1000 * (10**uint256(decimals()));
+    uint256 public _totalSupply = 1000000000 * (10**uint256(decimals()));
 
-    constructor(address _owner) ERC20("TestToken", "TT") {
+    constructor(address _owner, string memory _symbol) ERC20("StableCoin", _symbol) {
         _mint(_owner, _totalSupply);
     }
 }
