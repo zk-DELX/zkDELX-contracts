@@ -80,7 +80,9 @@ contract Market is MarketEvent, Ownable {
             offers[_offerID].status == OfferStatus.Listing,
             "Offer is not listed"
         );
-        // require(offers[_offerID].amount > _amount, "Exceed max amount");
+        
+        require(offers[_offerID].amount > _amount, "Exceed max amount");
+        
         require(
             offers[_offerID].sellerAccount != msg.sender,
             "Cannot accept own offer"

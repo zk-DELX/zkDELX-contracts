@@ -60,9 +60,9 @@ contract BuyOffer is MarketEvent, Test {
      * buy offer
      */
 
-    function test_buyOffer() public {
-        
-        uint256 buyAmount = _amount - 20;
+    function test_buyOffer(uint256 buyAmount) public {
+         vm.assume(buyAmount < _amount);
+        // uint256 buyAmount = _amount - 20;
         /// @notice the vm.expectEmit must locate before the contract call
         vm.expectEmit(true, true, false, true);
         emit offerAccepted(buyAmount, _price, _offerId, address(user));
@@ -70,8 +70,11 @@ contract BuyOffer is MarketEvent, Test {
         vm.prank(user);
         market.buyOffer(_offerId, buyAmount);
     }
+    
+    
+    // function testFailed_CxeedMaxAmount() public {
 
-
+    // }
     /**
      * accepOffer
      */
