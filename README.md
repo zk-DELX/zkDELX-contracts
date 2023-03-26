@@ -1,6 +1,6 @@
 # Introduction
 
-This is a project for Decentralized ELectricity eXchange (DELX).
+This is a project for Decentralized ELectricity eXchange powered by Zero Knowledge technology (zkDELX).
 
 zkDELX is an innovative decentralized electricity exchange protocol based on zkEVM that facilitates the integration of electric vehicles and renewable energy industries. This protocol provides a user-friendly and efficient experience, similar to popular ride-sharing services like Uber, to match the supply side of green energy generated from households with surplus energy storage, and the demand side of electric vehicles finding charging sources in a very convenient way.
 
