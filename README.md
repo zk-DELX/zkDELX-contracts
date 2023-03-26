@@ -2,7 +2,17 @@
 
 This is a project for Decentralized ELectricity eXchange (DELX).
 
-Refer to [excalidraw](https://excalidraw.com/#room=1e40eb59d4910c89d990,kqi-1NwQ7TxqgMy-49i0Nw) for the system design
+zkDELX is an innovative decentralized electricity exchange protocol based on zkEVM that facilitates the integration of electric vehicles and renewable energy industries. This protocol provides a user-friendly and efficient experience, similar to popular ride-sharing services like Uber, to match the supply side of green energy generated from households with surplus energy storage, and the demand side of electric vehicles finding charging sources in a very convenient way.
+
+Sellers can create an offer by providing their energy storage information, location, and electricity price, which is aggregated from local real-time electricity prices using a price oracle. Buyers can select the offer based on the options of price, demand for electricity, and distance between the seller's energy storage location and the buyer's electric vehicle.
+
+Powered by advanced zkEVM technology scaling solutions, the transaction is low-cost and high-volume.
+
+To further decentralize the platform, the backend database also utilizes a decentralized database to store information. As a result, the transaction data can potentially become a public good product that facilitates research and development within the green industry.
+
+
+
+Refer to [excalidraw](https://excalidraw.com/#room=1e40eb59d4910c89d990,kqi-1NwQ7TxqgMy-49i0Nw) for the system design.
 
 ## Specifications
 - In frontend, all prices keep two decimals precision in dollars, e.g., 0.47 $/KWh, and when interacting with smart contract, all prices are represented in cents, e.g., 47 cents/KWh. 
@@ -109,7 +119,7 @@ forge create --rpc-url https://alpha-rpc.scroll.io/l2 \
   src/Market.sol:Market
 ```
 
-Test token deploy
+Test token deploy:
 ```
 forge create --rpc-url https://alpha-rpc.scroll.io/l2 \
   --constructor-args <Minter address> \
@@ -122,6 +132,8 @@ https://blockscout.scroll.io/address/0x7A3CFcf7FD5C67abb2970EEB35D3a4a2BacCACD2/
 
 
 ### Taiko Hackathon Testnet
+
+Deploy main contract:
 ```
 forge create --rpc-url https://l2rpc.a2.taiko.xyz/ \
   --constructor-args <Minter Address> \
@@ -134,6 +146,7 @@ Deployed to: 0x258FF931ce6A7DC9391a649E8a7A84fC17717c76
 Transaction hash: 0x707be16258be9ea9af34e3ba011f81980c7d6afa2bf9c28406099a71d388e6b5
 ```
 
+Deploy test token contract:
 ```
 forge create --rpc-url https://l2rpc.a2.taiko.xyz \
   --constructor-args 1000000000000000000000 \
