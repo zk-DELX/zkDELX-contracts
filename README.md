@@ -10,15 +10,13 @@ Powered by advanced zkEVM technology scaling solutions, the transaction is low-c
 
 To further decentralize the platform, the backend database also utilizes a decentralized database to store information. As a result, the transaction data can potentially become a public good product that facilitates research and development within the green industry.
 
-
-
-Refer to [excalidraw](https://excalidraw.com/#room=1e40eb59d4910c89d990,kqi-1NwQ7TxqgMy-49i0Nw) for the system design.
+Refer to [excalidraw](https://excalidraw.com/#room=1e40eb59d4910c89d990,kqi-1NwQ7TxqgMy-49i0Nw) for the system design and and [these slides](https://docs.google.com/presentation/d/1IRCl-LmM3ytD--NWAEF0NsmdatydBXYflLBzF42_WFM/edit) for the project introduction.
 
 ## Specifications
-- In frontend, all prices keep two decimals precision in dollars, e.g., 0.47 $/KWh, and when interacting with smart contract, all prices are represented in cents, e.g., 47 cents/KWh. 
-- People can choose to pay in various stablecoins, USDT, USDC etc. The value of a KWh of electricity should be always stable. Involving Eth for payments will break this stability. Look at [here](https://www.statista.com/statistics/263492/electricity-prices-in-selected-countries/) for the worldwide  electricity household prices.
-- User types: consumer, prosumer, producer
 
+- In frontend, all prices keep two decimals precision in dollars, e.g., 0.47 $/KWh. When interacting with smart contract, all prices related args are represented in BigNumber.
+- People can choose to pay in various stablecoins, USDT, USDC etc. The value of a KWh of electricity should be always stable. Involving Eth for payments will break this stability. Look at [here](https://www.statista.com/statistics/263492/electricity-prices-in-selected-countries/) for the worldwide electricity household prices.
+- User types: buyer, seller
 
 ## Foundry Installation
 
@@ -62,9 +60,9 @@ Please create a `.env` file before deployment. An example can be found in `.env.
 
 #### Local deployment
 
-Run `anvil` by open another terminal. This will start a local network and spin up 10 accounts and private keys and log them out to the console. Once the network is running, we can use forge to deploy the contract to the network. 
+Run `anvil` by open another terminal. This will start a local network and spin up 10 accounts and private keys and log them out to the console. Once the network is running, we can use forge to deploy the contract to the network.
 
-Next, set the PRIVATE_KEY variable by using one of the private keys given to you by Anvil: 
+Next, set the PRIVATE_KEY variable by using one of the private keys given to you by Anvil:
 
 `export PRIVATE_KEY=<your-private-key>`
 
@@ -87,12 +85,12 @@ forge script script/Deploy.s.sol -f [network]
 forge script script/Deploy.s.sol -f [network] --verify --broadcast
 ```
 
+### Example
 
-
-### Example 
 https://github.com/dabit3/foundry-workshop
 
 ### Polygon zkEVM
+
 Contract address: `0x258FF931ce6A7DC9391a649E8a7A84fC17717c76`
 
 Testnet setup and bridge ETH from Goerli https://wiki.polygon.technology/docs/zkEVM/develop
@@ -101,13 +99,14 @@ Then using Remix to deploy it.
 
 Etherscan verifcation process: https://github.com/oceans404/zkevm-hardhat-demo#verify-your-polygon-zkevm-testnet-contract
 
-https://explorer.public.zkevm-test.net/address/0x258FF931ce6A7DC9391a649E8a7A84fC17717c76/contracts#address-tabs 
+https://explorer.public.zkevm-test.net/address/0x258FF931ce6A7DC9391a649E8a7A84fC17717c76/contracts#address-tabs
 
 ### Scroll Alpha Testnet
+
 Contract address: `0x0eDD23e9aD4Df447B2F8EE410cb66aAfE08F9f0D`
 
 Developer guide:
-https://guide.scroll.io/developers/developer-quickstart 
+https://guide.scroll.io/developers/developer-quickstart
 
 Contract deployment to run:
 
@@ -120,6 +119,7 @@ forge create --rpc-url https://alpha-rpc.scroll.io/l2 \
 ```
 
 Test token deploy:
+
 ```
 forge create --rpc-url https://alpha-rpc.scroll.io/l2 \
   --constructor-args <Minter address> \
@@ -130,10 +130,10 @@ forge create --rpc-url https://alpha-rpc.scroll.io/l2 \
 https://blockscout.scroll.io/address/0x7A3CFcf7FD5C67abb2970EEB35D3a4a2BacCACD2/read-contract#address-tabs
 ```
 
-
 ### Taiko Hackathon Testnet
 
 Deploy main contract:
+
 ```
 forge create --rpc-url https://l2rpc.a2.taiko.xyz/ \
   --constructor-args <Minter Address> \
@@ -147,6 +147,7 @@ Transaction hash: 0x707be16258be9ea9af34e3ba011f81980c7d6afa2bf9c28406099a71d388
 ```
 
 Deploy test token contract:
+
 ```
 forge create --rpc-url https://l2rpc.a2.taiko.xyz \
   --constructor-args 1000000000000000000000 \
@@ -154,5 +155,5 @@ forge create --rpc-url https://l2rpc.a2.taiko.xyz \
   --legacy \
   src/Market.sol:Market
 
-Deployed to:  0x4e2b1bA85b1696A8C826Be0524eFb9345701d776 
+Deployed to:  0x4e2b1bA85b1696A8C826Be0524eFb9345701d776
 ```
