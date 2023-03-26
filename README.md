@@ -94,6 +94,9 @@ Etherscan verifcation process: https://github.com/oceans404/zkevm-hardhat-demo#v
 https://explorer.public.zkevm-test.net/address/0x258FF931ce6A7DC9391a649E8a7A84fC17717c76/contracts#address-tabs 
 
 ### Scroll Alpha Testnet
+Contract address: `0x0eDD23e9aD4Df447B2F8EE410cb66aAfE08F9f0D`
+
+Developer guide:
 https://guide.scroll.io/developers/developer-quickstart 
 
 Contract deployment to run:
@@ -121,7 +124,7 @@ https://blockscout.scroll.io/address/0x7A3CFcf7FD5C67abb2970EEB35D3a4a2BacCACD2/
 ### Taiko Hackathon Testnet
 ```
 forge create --rpc-url https://l2rpc.a2.taiko.xyz/ \
-  --constructor-args 0xb72D7383D233697B74c672BAa0B0BfeCAAc10B99 \
+  --constructor-args <Minter Address> \
   --private-key <PK> \
   --legacy \
   src/test/TestToken.sol:TestToken
