@@ -10,6 +10,7 @@ contract ContractScript is Script {
     function run() public {
         vm.broadcast();
         address minter = 0xb72D7383D233697B74c672BAa0B0BfeCAAc10B99;
-        new TestToken(minter);
+        string memory name = "DELX";
+        new TestToken(minter,name);
     }
 }

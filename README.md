@@ -101,6 +101,48 @@ Etherscan verifcation process: https://github.com/oceans404/zkevm-hardhat-demo#v
 
 https://explorer.public.zkevm-test.net/address/0x258FF931ce6A7DC9391a649E8a7A84fC17717c76/contracts#address-tabs
 
+## Update on Taiko Testnet
+Deploy on Taiko Alpha-3 Testnet
+
+Test Token Deployment
+
+```
+forge create --rpc-url https://rpc.test.taiko.xyz \
+  --constructor-args <minter_address> <token_name> \
+  --private-key <deploy_pk> \
+  --legacy \
+  src/test/TestToken.sol:TestToken
+```
+
+As results:
+
+```
+Deployer: 0xb72D7383D233697B74c672BAa0B0BfeCAAc10B99
+Deployed to: 0x258FF931ce6A7DC9391a649E8a7A84fC17717c76
+Transaction hash: 0x86122c968750d59d4e45598e339d541ee5456b5560c42714de6787628fa2bbf6
+```
+
+Main contract deployment
+
+```
+forge create --rpc-url https://rpc.test.taiko.xyz \
+  --constructor-args 1000000000 \
+  --private-key <PK> \
+  --legacy \
+  src/Market.sol:Market
+```
+
+As results
+```
+Deployer: 0xb72D7383D233697B74c672BAa0B0BfeCAAc10B99
+Deployed to: 0x6ed5AA348b93022D0f117823f2F7525EecA526fd
+Transaction hash: 0xb7364544613478a59cce52a046ba8e23977bcbe08b001664a80cf93eed43781d
+```
+
+
+
+
+
 ### Scroll Alpha Testnet
 
 Contract address: `0x0eDD23e9aD4Df447B2F8EE410cb66aAfE08F9f0D`
